@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android Team Member Workflow</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        margin: 0;
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+
+      h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 2.5em;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 40px;
+        font-size: 1.1em;
+      }
+
+      .workflow-section {
+        margin-bottom: 40px;
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 15px;
+        border-left: 5px solid #667eea;
+      }
+
+      .workflow-section h2 {
+        color: #667eea;
+        margin-top: 0;
+        font-size: 1.8em;
+      }
+
+      .flow-container {
+        display: flex;
+        align-items: center;
+        margin: 20px 0;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .flow-step {
+        background: white;
+        border: 2px solid #ddd;
+        padding: 15px 20px;
+        border-radius: 10px;
+        min-width: 150px;
+        text-align: center;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .flow-step:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+        border-color: #667eea;
+      }
+
+      .flow-step.active {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+      }
+
+      .flow-step.urgent {
+        background: #ff6b6b;
+        color: white;
+        border-color: #ff6b6b;
+      }
+
+      .flow-step.decision {
+        background: #ffd93d;
+        border-color: #ffd93d;
+        clip-path: polygon(15% 0%, 85% 0%, 100% 50%, 85% 100%, 15% 100%, 0% 50%);
+        padding: 20px 30px;
+      }
+
+      .arrow {
+        font-size: 24px;
+        color: #667eea;
+      }
+
+      .daily-checklist {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .checklist-item {
+        padding: 12px;
+        margin: 8px 0;
+        background: #f0f4ff;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+      }
+
+      .checklist-item:hover {
+        background: #e6ecff;
+        transform: translateX(5px);
+      }
+
+      .checklist-item input[type="checkbox"] {
+        margin-right: 15px;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+      }
+
+      .time-box {
+        display: inline-block;
+        background: #ff6b6b;
+        color: white;
+        padding: 3px 8px;
+        border-radius: 5px;
+        font-size: 0.85em;
+        font-weight: bold;
+        margin-left: 10px;
+      }
+
+      .time-box.normal {
+        background: #4caf50;
+      }
+
+      .time-box.warning {
+        background: #ff9800;
+      }
+
+      .wip-indicator {
+        background: #fff;
+        border: 3px solid #667eea;
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .wip-indicator h3 {
+        color: #667eea;
+        margin-top: 0;
+      }
+
+      .wip-slots {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .wip-slot {
+        width: 60px;
+        height: 60px;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        transition: all 0.3s ease;
+      }
+
+      .wip-slot.filled {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+      }
+
+      .wip-slot.available {
+        background: #e8f5e9;
+        border-color: #4caf50;
+        color: #4caf50;
+      }
+
+      .emergency-flow {
+        background: #fff3e0;
+        border: 2px solid #ff9800;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .emergency-flow h4 {
+        color: #ff6b6b;
+        margin-top: 0;
+      }
+
+      .sla-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .sla-card {
+        background: white;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      .sla-card:hover {
+        border-color: #667eea;
+        transform: scale(1.05);
+      }
+
+      .sla-card h5 {
+        color: #667eea;
+        margin: 0 0 10px 0;
+      }
+
+      .sla-time {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>📱 Android Team Member Workflow</h1>
+      <div class="subtitle">Daily Work Process for 4-Person Team | WIP Limit: 4 Items</div>
+      <!-- WIP Indicator -->
+      <div class="wip-indicator">
+        <h3>Team WIP Status (Max: 4)</h3>
+        <div class="wip-slots">
+          <div class="wip-slot filled">Item 1</div>
+          <div class="wip-slot filled">Item 2</div>
+          <div class="wip-slot filled">Item 3</div>
+          <div class="wip-slot available">Free</div>
+        </div>
+        <p style="color: #666; margin-top: 10px;">✅ Can pull 1 more item | ⚠️ Reserve for P0/P1</p>
+      </div>
+      <!-- Main Development Flow -->
+      <div class="workflow-section">
+        <h2>🔄 Main Development Flow</h2>
+        <div class="flow-container">
+          <div class="flow-step">📥 Check Backlog</div>
+          <span class="arrow">→</span>
+          <div class="flow-step decision">WIP < 4? </div>
+              <span class="arrow">→</span>
+              <div class="flow-step active">Pull Item</div>
+              <span class="arrow">→</span>
+              <div class="flow-step">Discovery <span class="time-box warning">24h</span>
+              </div>
+              <span class="arrow">→</span>
+              <div class="flow-step">Development <span class="time-box normal">1-3 days</span>
+              </div>
+              <span class="arrow">→</span>
+              <div class="flow-step">Code Review <span class="time-box warning">4h</span>
+              </div>
+              <span class="arrow">→</span>
+              <div class="flow-step">QA Support</div>
+              <span class="arrow">→</span>
+              <div class="flow-step">Release Ready</div>
+          </div>
+        </div>
+        <!-- Daily Checklist -->
+        <div class="workflow-section">
+          <h2>📋 Daily Checklist</h2>
+          <div class="daily-checklist">
+            <div class="checklist-item">
+              <input type="checkbox" id="check1">
+              <label for="check1">
+                <strong>Morning:</strong> Check WIP count (must be ≤ 4) </label>
+            </div>
+            <div class="checklist-item">
+              <input type="checkbox" id="check2">
+              <label for="check2">
+                <strong>9 AM:</strong> Stand-up - Report on your ONE item </label>
+            </div>
+            <div class="checklist-item">
+              <input type="checkbox" id="check3">
+              <label for="check3">
+                <strong>Every 4 hours:</strong> Check for pending PR reviews <span class="time-box">4h SLA</span>
+              </label>
+            </div>
+            <div class="checklist-item">
+              <input type="checkbox" id="check4">
+              <label for="check4">
+                <strong>Continuous:</strong> Update Jira status when moving stages </label>
+            </div>
+            <div class="checklist-item">
+              <input type="checkbox" id="check5">
+              <label for="check5">
+                <strong>Before EOD:</strong> Commit code (branch lifetime ≤ 3 days) </label>
+            </div>
+          </div>
+        </div>
+        <!-- Stage-Specific Work -->
+        <div class="workflow-section">
+          <h2>📍 Your Work at Each Stage</h2>
+          <div class="sla-grid">
+            <div class="sla-card">
+              <h5>Discovery</h5>
+              <p>• 3 Amigos session <br> • Review API contracts <br> • Estimate (S/M/L) </p>
+              <div class="sla-time">≤ 24h</div>
+            </div>
+            <div class="sla-card">
+              <h5>In Dev</h5>
+              <p>• Code implementation <br> • Write unit tests <br> • Add feature flags </p>
+              <div class="sla-time">1-3 days</div>
+            </div>
+            <div class="sla-card">
+              <h5>Code Review</h5>
+              <p>• Review others' PRs <br> • Security check <br> • Test verification </p>
+              <div class="sla-time">≤ 4h</div>
+            </div>
+            <div class="sla-card">
+              <h5>QA Support</h5>
+              <p>• Fix defects <br> • Contract testing <br> • Bug triage </p>
+              <div class="sla-time">≤ 24h</div>
+            </div>
+          </div>
+        </div>
+        <!-- Emergency Response -->
+        <div class="workflow-section">
+          <h2>🚨 Emergency Response Flow</h2>
+          <div class="emergency-flow">
+            <h4>When P0/P1 Issue Arrives:</h4>
+            <div class="flow-container">
+              <div class="flow-step urgent">P0/P1 Alert</div>
+              <span class="arrow">→</span>
+              <div class="flow-step">Drop Current</div>
+              <span class="arrow">→</span>
+              <div class="flow-step urgent">Start Fix <span class="time-box">30min</span>
+              </div>
+              <span class="arrow">→</span>
+              <div class="flow-step">Fast Review <span class="time-box">1h</span>
+              </div>
+              <span class="arrow">→</span>
+              <div class="flow-step">Emergency Release</div>
+            </div>
+            <p style="margin-top: 15px;">
+              <strong>P0 MTTR:</strong> ≤ 1 day | <strong>P1 Response:</strong> ≤ 4 hours
+            </p>
+          </div>
+        </div>
+        <!-- Decision Rules -->
+        <div class="workflow-section">
+          <h2>🤔 Key Decision Points</h2>
+          <div style="background: white; padding: 20px; border-radius: 10px;">
+            <h4>Before Pulling New Work:</h4>
+            <ul>
+              <li>
+                <strong>Is team WIP < 4? </strong> → Yes: Pull item | No: Complete current work first
+              </li>
+              <li>
+                <strong>Is it P0/P1?</strong> → Yes: Drop everything | No: Follow normal flow
+              </li>
+              <li>
+                <strong>DoR complete?</strong> → Yes: Start development | No: Back to backlog
+              </li>
+            </ul>
+            <h4>During Development:</h4>
+            <ul>
+              <li>
+                <strong>Branch age > 3 days?</strong> → Create PR immediately
+              </li>
+              <li>
+                <strong>PR waiting > 4 hours?</strong> → Escalate to Android Lead
+              </li>
+              <li>
+                <strong>Blocked?</strong> → Document in Jira + notify in standup
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- Release Schedule -->
+        <div class="workflow-section">
+          <h2>📅 Android Release Schedule</h2>
+          <div style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); padding: 25px; border-radius: 15px; border: 2px solid #667eea;">
+            <h3 style="color: #667eea; margin-top: 0;">Release Timing Rules</h3>
+            <div class="sla-grid">
+              <div class="sla-card" style="border: 3px solid #4caf50;">
+                <h5 style="color: #4caf50;">Normal Release</h5>
+                <p>Batch completed features</p>
+                <div class="sla-time" style="color: #4caf50;">Every 2-3 days</div>
+                <p style="font-size: 0.9em; color: #666;">Min gap: ≥ 2 days</p>
+              </div>
+              <div class="sla-card" style="border: 3px solid #ff6b6b;">
+                <h5 style="color: #ff6b6b;">Hotfix Release</h5>
+                <p>P0/P1 only</p>
+                <div class="sla-time" style="color: #ff6b6b;">Immediate</div>
+                <p style="font-size: 0.9em; color: #666;">Can bypass 2-day rule</p>
+              </div>
+            </div>
+            <div style="background: white; margin-top: 20px; padding: 20px; border-radius: 10px;">
+              <h4 style="color: #333; margin-top: 0;">📱 Weekly Release Pattern Example</h4>
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 15px;">
+                <div style="text-align: center; flex: 1; min-width: 100px;">
+                  <div style="background: #667eea; color: white; padding: 10px; border-radius: 10px; font-weight: bold;">Monday</div>
+                  <p style="margin: 5px 0; font-size: 0.9em;">v1.0 Release</p>
+                  <p style="margin: 0; font-size: 0.8em; color: #666;">Features A, B, C</p>
+                </div>
+                <span class="arrow">→</span>
+                <div style="text-align: center; flex: 1; min-width: 100px;">
+                  <div style="background: #ddd; color: #999; padding: 10px; border-radius: 10px;">Tuesday</div>
+                  <p style="margin: 5px 0; font-size: 0.9em; color: #999;">❌ Too Soon</p>
+                  <p style="margin: 0; font-size: 0.8em; color: #999;">Accumulating</p>
+                </div>
+                <span class="arrow">→</span>
+                <div style="text-align: center; flex: 1; min-width: 100px;">
+                  <div style="background: #667eea; color: white; padding: 10px; border-radius: 10px; font-weight: bold;">Wednesday</div>
+                  <p style="margin: 5px 0; font-size: 0.9em;">v1.1 Release</p>
+                  <p style="margin: 0; font-size: 0.8em; color: #666;">Features D, E</p>
+                </div>
+                <span class="arrow">→</span>
+                <div style="text-align: center; flex: 1; min-width: 100px;">
+                  <div style="background: #ddd; color: #999; padding: 10px; border-radius: 10px;">Thursday</div>
+                  <p style="margin: 5px 0; font-size: 0.9em; color: #999;">❌ Too Soon</p>
+                  <p style="margin: 0; font-size: 0.8em; color: #999;">Accumulating</p>
+                </div>
+                <span class="arrow">→</span>
+                <div style="text-align: center; flex: 1; min-width: 100px;">
+                  <div style="background: #667eea; color: white; padding: 10px; border-radius: 10px; font-weight: bold;">Friday</div>
+                  <p style="margin: 5px 0; font-size: 0.9em;">v1.2 Release</p>
+                  <p style="margin: 0; font-size: 0.8em; color: #666;">Features F, G, H</p>
+                </div>
+              </div>
+            </div>
+            <div style="background: #fff3e0; margin-top: 20px; padding: 15px; border-radius: 10px; border-left: 5px solid #ff9800;">
+              <h4 style="color: #ff6b6b; margin: 0 0 10px 0;">⚠️ Release Checklist Before Each Release</h4>
+              <ul style="margin: 0; padding-left: 20px;">
+                <li>All features in batch have QA sign-off ✅</li>
+                <li>0 open P0/P1 defects</li>
+                <li>Store assets & release notes prepared</li>
+                <li>Staged rollout % configured</li>
+                <li>Previous release stable for 24-72h</li>
+                <li>Release Owner assigned and ready</li>
+              </ul>
+            </div>
+            <div style="text-align: center; margin-top: 20px; padding: 15px; background: #f0f4ff; border-radius: 10px;">
+              <strong>Maximum Releases per Week: 2-3 releases</strong>
+              <br>
+              <span style="color: #666; font-size: 0.9em;">This creates predictable update cycles for users while maintaining quality</span>
+            </div>
+          </div>
+        </div>
+      </div>
+  </body>
+</html>
