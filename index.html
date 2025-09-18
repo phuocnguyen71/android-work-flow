@@ -347,7 +347,7 @@
             <div class="emergency-flow">
                 <h4>When P0/P1 Issue Arrives:</h4>
                 <div class="flow-container">
-                    <div class="flow-step urgent">P0/P1 Alert</div>
+                    <div class="flow-step urgent">P0 Alert</div>
                     <span class="arrow">→</span>
                     <div class="flow-step">Drop Current</div>
                     <span class="arrow">→</span>
@@ -357,7 +357,7 @@
                     <span class="arrow">→</span>
                     <div class="flow-step">Emergency Release</div>
                 </div>
-                <p style="margin-top: 15px;"><strong>P0 MTTR:</strong> ≤ 1 day | <strong>P1 Response:</strong> ≤ 4 hours</p>
+                <p style="margin-top: 15px;"><strong>P0 MTTR(Mean Time to Repair):</strong> ≤ 1 day | <strong>P1 Response:</strong> ≤ 4 hours</p>
             </div>
         </div>
 
@@ -368,7 +368,7 @@
                 <h4>Before Pulling New Work:</h4>
                 <ul>
                     <li><strong>Is team WIP < 4?</strong> → Yes: Pull item | No: Complete current work first</li>
-                    <li><strong>Is it P0/P1?</strong> → Yes: Drop everything | No: Follow normal flow</li>
+                    <li><strong>Is it P0?</strong> → Yes: Drop everything | No: Follow normal flow</li>
                     <li><strong>DoR complete?</strong> → Yes: Start development | No: Back to backlog</li>
                 </ul>
                 
@@ -443,9 +443,8 @@
                     <ul style="margin: 0; padding-left: 20px;">
                         <li>All features in batch have QA sign-off ✅</li>
                         <li>0 open P0/P1 defects</li>
-                        <li>Store assets & release notes prepared</li>
-                        <li>Staged rollout % configured</li>
-                        <li>Previous release stable for 24-72h</li>
+                        <li>Release notes prepared</li>
+                     <li>Previous release stable for 24-72h</li>
                         <li>Release Owner assigned and ready</li>
                     </ul>
                 </div>
